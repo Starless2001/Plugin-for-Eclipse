@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ABC_Plugin_for_Eclipse
+Bundle-SymbolicName: abc;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: abc_plugin_for_eclipse.Activator
+Bundle-Vendor: Starless
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
