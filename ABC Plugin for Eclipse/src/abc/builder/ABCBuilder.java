@@ -192,9 +192,8 @@ public class ABCBuilder extends IncrementalProjectBuilder
 			throws CoreException
 	{
 		JavaASTParser.parseProject(getProject());
-		FieldCollector fieldCollector = JavaASTParser.fieldCollector;
-		
-		fieldCollector.fieldsToAnnotations.forEach((fieldName, annotations) ->
+		JavaASTParser.messages.forEach((file, msg) -> addMarker(file, msg, -1, IMarker.SEVERITY_WARNING));
+		/*fieldCollector.fieldsToAnnotations.forEach((fieldName, annotations) ->
 		{
 			String message = "F: " + fieldName + "@{ ";
 			for(String annotation : annotations)
@@ -208,7 +207,7 @@ public class ABCBuilder extends IncrementalProjectBuilder
 			message += " }";
 			
 			System.out.println(message);
-		});
+		});*/
 	}
 
 	private SAXParser getParser()

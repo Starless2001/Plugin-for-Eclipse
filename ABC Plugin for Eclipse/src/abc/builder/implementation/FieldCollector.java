@@ -14,7 +14,11 @@ import org.eclipse.jdt.core.dom.VariableDeclaration;
 
 public class FieldCollector extends ASTVisitor
 {
-	public HashMap<String, ArrayList<String>> fieldsToAnnotations = new HashMap<>();
+	/**
+	 * name of the field is a key, the value is a string of annotations.
+	 */ 	
+	 public HashMap<String, ArrayList<String>> fieldsToAnnotations = new HashMap<>();
+	 
 	
 	@Override
 	public boolean visit(FieldDeclaration fieldDeclNode)

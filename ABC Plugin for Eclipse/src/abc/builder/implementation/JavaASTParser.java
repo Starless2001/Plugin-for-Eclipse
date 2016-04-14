@@ -1,5 +1,9 @@
 package abc.builder.implementation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -9,6 +13,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -19,6 +24,7 @@ public class JavaASTParser
 	public static MethodCollector methodCollector;
 	public static ParameterCollector parameterCollector;
 	
+	public static HashMap<IFile, String> messages = new HashMap<>();
 	public static void parseProject(IProject project)
 	{
 		try
@@ -60,8 +66,14 @@ public class JavaASTParser
 		}
 	}
 	
-	private static void parseCompilationUnit(ICompilationUnit unit)
+	private static void parseCompilationUnit(ICompilationUnit unit) throws JavaModelException
 	{
+		IFile file = (IFile) unit.getUnderlyingResource();
+		
+		String text = unit.getElementName() + "\n";
+		
+		messages.put(file, text);
+		
 		System.out.println("parsing " + unit.getElementName());
 		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setResolveBindings(true);
@@ -72,6 +84,20 @@ public class JavaASTParser
 		
 		fieldCollector = new FieldCollector();
 		ast.accept(fieldCollector);
+		final Wrapper<String> wrp = new Wrapper<>();
+		wrp.element = text;
+		fieldCollector.fieldsToAnnotations.forEach((fieldName, annotations) ->
+		{
+			wrp.element += "F: " + fieldName + " { ";
+			for(String annotation : annotations)
+			{
+				wrp.element += annotation + " ";
+			}
+			
+			wrp.element += "}\n";
+		});
+		
+		text = wrp.element;
 		
 		methodCollector = new MethodCollector();
 		ast.accept(methodCollector);
